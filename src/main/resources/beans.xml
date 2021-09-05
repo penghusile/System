@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--属性注入-->
+    <bean name="gender_man" class="com.web2019.team4.system.Dao.Entity.Gender">
+        <property name="gender" value="男"></property>
+    </bean>
+    <bean name="user1" class="com.web2019.team4.system.Dao.Entity.User">
+        <property name="id" value="123456789"></property>
+        <property name="password" value="000000"></property>
+        <property name="gender" ref="gender_man"></property>
+    </bean>
+</beans>

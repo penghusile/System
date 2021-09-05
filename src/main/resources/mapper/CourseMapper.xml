@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web2019.team4.system.Dao.Mapper.CourseMapper">
+    <resultMap id="courseMap" type="com.web2019.team4.system.Dao.Entity.Course">
+        <result property="id" column="course_id"/>
+        <result property="name" column="course_name"/>
+        <result property="teacher" column="course_teacher"/>
+    </resultMap>
+    <insert id="addCourse"
+            parameterType="com.web2019.team4.system.Dao.Entity.Course" >
+       INSERT INTO course
+                (course_id,course_name,course_teacher)
+           VALUES
+               (#{id}, #{name}, #{teacher} )
+    </insert>
+    <select id="selectAllCourse"
+            resultMap="courseMap">
+        SELECT * FROM course ORDER BY course_id
+    </select>
+    <select id="selectCourseByID" parameterType="java.lang.String"
+            resultMap="courseMap">
+        SELECT * FROM course WHERE course_id =#{id} ORDER BY course_id
+    </select>
+    <delete id="delCourse" parameterType="com.web2019.team4.system.Dao.Entity.Course">
+        DELETE FROM course WHERE course_id=#{id}
+    </delete>
+    <update id="updateCourse" parameterType="com.web2019.team4.system.Dao.Entity.Course">
+         UPDATE course SET course_name=#{name},course_teacher=#{teacher} WHERE course_id=#{id}
+    </update>
+</mapper>
