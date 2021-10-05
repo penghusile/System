@@ -2,16 +2,19 @@ package com.web2019.team4.system.Controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.web2019.team4.system.Common.API.CommonResult;
+import com.web2019.team4.system.Dao.Entity.Permission;
 import com.web2019.team4.system.Dao.Entity.User;
+import com.web2019.team4.system.Dto.UserLoginParam;
 import com.web2019.team4.system.Service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -36,6 +41,11 @@ public class IndexController {
     @Autowired
     private UserService userService;
     private HttpSession session = null;
+    @Value("${jwt.tokenHeader}")
+    private String tokenHeader;
+    @Value("${jwt.tokenHead}")
+    private String tokenHead;
+
     @RequestMapping(value = {"/","/index"})
     public String index(){
         return "index";
@@ -120,16 +130,26 @@ public class IndexController {
             return "上传失败";
         }
     }
-    @RequestMapping(value = "/uploadFinger")
-    @ResponseBody
-    public String uploadFinger(@RequestParam String fileName) {
-        if (fileName == null || fileName.isEmpty()) {
-            logger.debug("空，上传失败");
-            return "上传失败";
-        }
-        System.out.println(fileName);
-        return fileName;
 
+    @ApiOperation(value = "登录以后返回token")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult login(@RequestBody UserLoginParam loginParam,BindingResult result) {
+        String token = userService.login(loginParam.getUsername(), loginParam.getPassword());
+        if (token == null) {
+            return CommonResult.validateFailed("用户名或密码错误");
+        }
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        tokenMap.put("tokenHead", tokenHead);
+        return CommonResult.success(tokenMap);
     }
 
+    @ApiOperation("获取用户所有权限（包括+-权限）")
+    @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<Permission>> getPermissionList(@PathVariable Long adminId) {
+        List<Permission> permissionList = userService.getPermissionList(adminId);
+        return CommonResult.success(permissionList);
+    }
 }

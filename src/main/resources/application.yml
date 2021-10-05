@@ -1,0 +1,65 @@
+server:
+  port: 8084 #main函数启动指定端口
+spring:
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml # 指定ehcache配置文件路径
+    type: ehcache # 配置ehcache缓存
+  datasource: #数据库配置
+    password: penghusile
+    url: jdbc:mysql://localhost:3306/web?characterEncoding=UTF-8&useUnicode=true&serverTimezone=GMT%2B8
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      # 这4个参数key里不带druid也可以，即可以还用上面的这个4个参数
+      #driver-class-name: com.mysql.cj.jdbc.Driver
+       # password: penghusile
+       # url: jdbc:mysql://localhost:3306/web?characterEncoding=UTF-8&useUnicode=true&serverTimezone=GMT%2B8
+       # username: root
+      pool-prepared-statements: true #是否缓存preparedStatement,mysql5.5+建议开启
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500 #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      filters: stat,wall #配置扩展插件
+      initial-size: 5 #初始化时建立物理连接的个数
+      max-active: 20 #最大连接池数量 maxIdle已经不再使用
+      max-pool-prepared-statement-per-connection-size: 20 #当值大于0时poolPreparedStatements会自动修改为true
+      max-wait: 60000 #获取连接时最大等待时间，单位毫秒
+      min-evictable-idle-time-millis: 30000 #销毁线程时检测当前连接的最后活动时间和当前时间差大于该值时，关闭当前连接
+      min-idle: 5 #最小连接池数量
+      stat-view-servlet: #设置访问druid监控页的账号和密码,默认没有
+        login-password: admin
+        login-username: admin
+      test-on-borrow: false #申请连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+      test-on-return: false #归还连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+      test-while-idle: true #申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      time-between-eviction-runs-millis: 60000 #既作为检测的间隔时间又作为testWhileIdel执行的依据
+      use-global-data-source-stat: true #合并多个DruidDataSource的监控数据
+      validation-query: select 'x' #用来检测连接是否有效的sql 必须是一个查询语句,mysql中为 select 'x',oracle中为 select 1 from dual
+
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/ #指定视图路径的前缀
+      suffix: .jsp #指定视图文件的后缀
+  redis:
+    jedis: #jedis连接池
+      pool:
+        max-active: 1000 #最大连接数量
+        max-idle: 10 #最大空闲数量
+        max-wait: 1000ms #最大等待时间
+        min-idle: 1 #最小空闲数量
+
+jwt:
+  expiration: 604800 #JWT的超期限时间(60*60*24)
+  secret: mySecret #JWT加解密使用的密钥
+  tokenHead: Bearer #JWT负载中拿到开头
+  tokenHeader: Authorization #JWT存储的请求头
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath*:mapper/*.xml
+redis:
+  host: 127.0.0.1 #Redis服务器地址
+  password: '' # Redis服务器连接密码（默认为空）
+  poolMaxIdle: 10 # 连接池中的最大连接数
+  poolMaxTotal: 10 # 连接池中的最大空闲连接
+  poolMaxWait: 3 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+  port: 6379 # Redis服务器连接端口
+  timeout: 3 # 连接超时时间（毫秒）

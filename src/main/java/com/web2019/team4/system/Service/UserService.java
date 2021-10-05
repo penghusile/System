@@ -1,9 +1,11 @@
 package com.web2019.team4.system.Service;
 
 import com.web2019.team4.system.Common.Utils.JwtTokenUtil;
+import com.web2019.team4.system.Dao.Entity.Permission;
 import com.web2019.team4.system.Dao.Entity.User;
 import com.web2019.team4.system.Dao.Mapper.UserMapper;
 import com.web2019.team4.system.Common.Utils.EhcacheUtil;
+import com.web2019.team4.system.Dao.Mapper.UserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -35,7 +38,8 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
-
+    @Autowired
+    private UserRoleMapper userRoleMapper;
 
     //注册函数
     @Transactional
@@ -102,5 +106,9 @@ public class UserService {
     public User getUserById(String userId){
        User user=userMapper.selectUserById(userId);
        return user;
+    }
+
+    public List<Permission> getPermissionList(Long userId) {
+        return userRoleMapper.getPermissionList(userId);
     }
 }
