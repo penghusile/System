@@ -1,9 +1,17 @@
 package com.web2019.team4.system.Dao.Entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Component
-public class User {
+public class User  {
     String id;
     String password;
     Gender gender;
@@ -21,9 +29,11 @@ public class User {
         this.id = id;
     }
 
+
     public String getPassword() {
         return password;
     }
+
 
     public void setPassword(String password) {
         this.password = password;
@@ -41,9 +51,4 @@ public class User {
         return "id: "+id+", password: " +password+", "+gender;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof User) return true;
-        else return false;
-    }
 }

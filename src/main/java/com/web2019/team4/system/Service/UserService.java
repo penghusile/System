@@ -6,6 +6,7 @@ import com.web2019.team4.system.Dao.Entity.User;
 import com.web2019.team4.system.Dao.Mapper.UserMapper;
 import com.web2019.team4.system.Common.Utils.EhcacheUtil;
 import com.web2019.team4.system.Dao.Mapper.UserRoleMapper;
+import com.web2019.team4.system.Dto.SystemUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserDetailsService userDetailsService;
@@ -89,11 +91,13 @@ public class UserService {
 
         String token = null;
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = loadUserByUsername(username);
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码不正确");
             }
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null,
+                            userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             token = jwtTokenUtil.generateToken(userDetails);
@@ -110,5 +114,12 @@ public class UserService {
 
     public List<Permission> getPermissionList(String userId) {
         return userRoleMapper.getPermissionList(userId);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        User user=userMapper.selectUserById(userName);
+        SystemUserDetail detail=new SystemUserDetail(user);
+        return detail;
     }
 }

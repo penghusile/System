@@ -21,6 +21,8 @@ import java.io.IOException;
 /**
  * JWT登录授权过滤器
  * Created by macro on 2018/4/26.
+ * 在用户名和密码校验前添加的过滤器，
+ * 如果请求中有jwt的token且有效，会取出token中的用户名，然后调用SpringSecurity的API进行登录操作。
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
@@ -52,6 +54,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 }
             }
         }
-        chain.doFilter(request, response);
+       chain.doFilter(request, response);
     }
 }

@@ -31,11 +31,12 @@ public class JwtTokenUtil {
      * 根据负责生成JWT的token
      */
     private String generateToken(Map<String, Object> claims) {
-        return Jwts.builder()
+       String token= Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(generateExpirationDate())
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
+       return token;
     }
 
     /**
