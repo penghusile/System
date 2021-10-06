@@ -51,8 +51,8 @@ public class IndexController {
         return "index";
     }
     //登录并跳转
-    @RequestMapping(value = "/login")
-    public ModelAndView login(HttpServletRequest request){
+    @RequestMapping(value = "/loginn")
+    public ModelAndView loginn(HttpServletRequest request){
         User user;
         //已经登陆后直接输入地址访问
         if(request.getParameter("user_name")==null){
@@ -67,6 +67,8 @@ public class IndexController {
                     request.getParameter("user_password"));
         }
         Map<String,String> map =  userService.login(user);
+        logger.info("---"+map.size());
+
         String message=map.get("message");
         String isSuccess=map.get("success");
 
@@ -134,11 +136,16 @@ public class IndexController {
     @ApiOperation(value = "登录以后返回token")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult login(@RequestBody UserLoginParam loginParam,BindingResult result) {
-        String token = userService.login(loginParam.getUsername(), loginParam.getPassword());
+    public CommonResult login(HttpServletRequest request) {
+         User user = new User(
+                request.getParameter("user_name"),
+                request.getParameter("user_password"));
+        String token = userService.login(user.getId(), user.getPassword());
+        logger.debug("---");
         if (token == null) {
             return CommonResult.validateFailed("用户名或密码错误");
         }
+        logger.debug("---");
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
         tokenMap.put("tokenHead", tokenHead);
@@ -148,8 +155,8 @@ public class IndexController {
     @ApiOperation("获取用户所有权限（包括+-权限）")
     @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<List<Permission>> getPermissionList(@PathVariable Long adminId) {
-        List<Permission> permissionList = userService.getPermissionList(adminId);
+    public CommonResult<List<Permission>> getPermissionList(@PathVariable String userId) {
+        List<Permission> permissionList = userService.getPermissionList(userId);
         return CommonResult.success(permissionList);
     }
 }

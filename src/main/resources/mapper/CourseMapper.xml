@@ -9,22 +9,22 @@
     <insert id="addCourse"
             parameterType="com.web2019.team4.system.Dao.Entity.Course" >
        INSERT INTO course
-                (course_id,course_name,course_teacher)
+                (id,course_name,course_teacher)
            VALUES
                (#{id}, #{name}, #{teacher} )
     </insert>
     <select id="selectAllCourse"
             resultMap="courseMap">
-        SELECT * FROM course ORDER BY course_id
+        SELECT * FROM course ORDER BY id
     </select>
     <select id="selectCourseByID" parameterType="java.lang.String"
             resultMap="courseMap">
-        SELECT * FROM course WHERE course_id =#{id} ORDER BY course_id
+        SELECT * FROM course WHERE id =#{id} ORDER BY id
     </select>
     <delete id="delCourse" parameterType="com.web2019.team4.system.Dao.Entity.Course">
-        DELETE FROM course WHERE course_id=#{id}
+        DELETE FROM course WHERE id=#{id}
     </delete>
     <update id="updateCourse" parameterType="com.web2019.team4.system.Dao.Entity.Course">
-         UPDATE course SET course_name=#{name},course_teacher=#{teacher} WHERE course_id=#{id}
+         UPDATE course SET course_name=#{name},course_teacher=#{teacher} WHERE id=#{id}
     </update>
 </mapper>

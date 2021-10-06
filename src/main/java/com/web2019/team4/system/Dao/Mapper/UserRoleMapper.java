@@ -9,5 +9,5 @@ public interface UserRoleMapper {
     /**
      * 获取用户所有权限(包括+-权限)
      */
-    List<Permission> getPermissionList(@Param("userId") Long userId);
+    List<Permission> getPermissionList(@Param("userId") String userId);
 }

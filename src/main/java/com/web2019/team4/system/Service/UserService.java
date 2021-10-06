@@ -108,7 +108,7 @@ public class UserService {
        return user;
     }
 
-    public List<Permission> getPermissionList(Long userId) {
+    public List<Permission> getPermissionList(String userId) {
         return userRoleMapper.getPermissionList(userId);
     }
 }
